@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Standard departmental equipment requirements per course (from the UMTTI requirement kits). -->
+    <record id="course_tailoring" model="umtti.course">
+        <field name="name">Tailoring &amp; Dressmaking</field>
+        <field name="code">TLR</field>
+        <field name="department">tailoring</field>
+    </record>
+    <record id="course_tailoring_item_1" model="umtti.equipment.item">
+        <field name="course_id" ref="course_tailoring"/>
+        <field name="sequence">10</field>
+        <field name="name">Dust Coat, Tape Measure, Paper Scissors &amp; Shears</field>
+        <field name="quantity">1</field>
+    </record>
+    <record id="course_tailoring_item_2" model="umtti.equipment.item">
+        <field name="course_id" ref="course_tailoring"/>
+        <field name="sequence">20</field>
+        <field name="name">Tailors Chalk, Pins, French Curves &amp; Straight Rulers (30cm/100cm)</field>
+        <field name="quantity">1</field>
+    </record>
+    <record id="course_tailoring_item_3" model="umtti.equipment.item">
+        <field name="course_id" ref="course_tailoring"/>
+        <field name="sequence">30</field>
+        <field name="name">Tracing Wheel, Glue/Pritt, Reams &amp; Drawing Books</field>
+        <field name="quantity">1</field>
+    </record>
+    <record id="course_tailoring_item_4" model="umtti.equipment.item">
+        <field name="course_id" ref="course_tailoring"/>
+        <field name="sequence">40</field>
+        <field name="name">Machine Needles Size 18 (Electric) &amp; Size 16 (Manual)</field>
+        <field name="quantity">2</field>
+    </record>
+    <record id="course_hairdressing" model="umtti.course">
+        <field name="name">Hairdressing &amp; Barbering</field>
+        <field name="code">HDR</field>
+        <field name="department">hairdressing</field>
+    </record>
+    <record id="course_hairdressing_item_1" model="umtti.equipment.item">
+        <field name="course_id" ref="course_hairdressing"/>
+        <field name="sequence">10</field>
+        <field name="name">Shampoo &amp; Conditioner (Miadi, Tony Airo, or Beula)</field>
+        <field name="quantity">1</field>
+    </record>
+    <record id="course_hairdressing_item_2" model="umtti.equipment.item">
+        <field name="course_id" ref="course_hairdressing"/>
+        <field name="sequence">20</field>
+        <field name="name">Weaving Needles, Thread &amp; Hair Extensions/Braids/Weaves</field>
+        <field name="quantity">1</field>
+    </record>
+    <record id="course_hairdressing_item_3" model="umtti.equipment.item">
+        <field name="course_id" ref="course_hairdressing"/>
+        <field name="sequence">30</field>
+        <field name="name">Towels (Medium Size) &amp; Shower Caps</field>
+        <field name="quantity">2</field>
+    </record>
+    <record id="course_hairdressing_item_4" model="umtti.equipment.item">
+        <field name="course_id" ref="course_hairdressing"/>
+        <field name="sequence">40</field>
+        <field name="name">Blow-drying Combs (Wooden Small/Large) &amp; Afro Combs</field>
+        <field name="quantity">1</field>
+    </record>
+    <record id="course_beauty" model="umtti.course">
+        <field name="name">Beauty Therapy</field>
+        <field name="code">BTY</field>
+        <field name="department">beauty</field>
+    </record>
+    <record id="course_beauty_item_1" model="umtti.equipment.item">
+        <field name="course_id" ref="course_beauty"/>
+        <field name="sequence">10</field>
+        <field name="name">Complete Manicure &amp; Pedicure Set &amp; Pumice Stone</field>
+        <field name="quantity">1</field>
+    </record>
+    <record id="course_beauty_item_2" model="umtti.equipment.item">
+        <field name="course_id" ref="course_beauty"/>
+        <field name="sequence">20</field>
+        <field name="name">Acetone, Assorted Nail Polish, Base Coat &amp; Top Coat</field>
+        <field name="quantity">1</field>
+    </record>
+    <record id="course_beauty_item_3" model="umtti.equipment.item">
+        <field name="course_id" ref="course_beauty"/>
+        <field name="sequence">30</field>
+        <field name="name">Exfoliating Scrub, Massage Oil, Cuticle Cream &amp; Spirit</field>
+        <field name="quantity">1</field>
+    </record>
+    <record id="course_beauty_item_4" model="umtti.equipment.item">
+        <field name="course_id" ref="course_beauty"/>
+        <field name="sequence">40</field>
+        <field name="name">Tweezers, Razors, Dettol Cotton Wool &amp; Small Towels</field>
+        <field name="quantity">1</field>
+    </record>
+    <record id="course_fb" model="umtti.course">
+        <field name="name">Food &amp; Beverage</field>
+        <field name="code">FNB</field>
+        <field name="department">food_beverage</field>
+    </record>
+    <record id="course_fb_item_1" model="umtti.equipment.item">
+        <field name="course_id" ref="course_fb"/>
+        <field name="sequence">10</field>
+        <field name="name">White Dust Coat, Chefs Jacket &amp; Chefs Hat</field>
+        <field name="quantity">1</field>
+    </record>
+    <record id="course_fb_item_2" model="umtti.equipment.item">
+        <field name="course_id" ref="course_fb"/>
+        <field name="sequence">20</field>
+        <field name="name">Black Chefs Trousers/Skirt (2) &amp; Low-heeled Closed Shoes</field>
+        <field name="quantity">1</field>
+    </record>
+    <record id="course_fb_item_3" model="umtti.equipment.item">
+        <field name="course_id" ref="course_fb"/>
+        <field name="sequence">30</field>
+        <field name="name">White Apron, Bow Tie/Wide Ribbon &amp; Waiters Cloths (2)</field>
+        <field name="quantity">1</field>
+    </record>
+    <record id="course_fb_item_4" model="umtti.equipment.item">
+        <field name="course_id" ref="course_fb"/>
+        <field name="sequence">40</field>
+        <field name="name">Dish Clothes (5), Oven Gloves, Glass Cloths (2), Tray Cloths (2) &amp; Opener</field>
+        <field name="quantity">1</field>
+    </record>
+    <record id="course_engineering" model="umtti.course">
+        <field name="name">Engineering</field>
+        <field name="code">ENG</field>
+        <field name="department">engineering</field>
+    </record>
+    <record id="course_engineering_item_1" model="umtti.equipment.item">
+        <field name="course_id" ref="course_engineering"/>
+        <field name="sequence">10</field>
+        <field name="name">Navy Blue Overall / Dust Coat</field>
+        <field name="quantity">1</field>
+    </record>
+    <record id="course_engineering_item_2" model="umtti.equipment.item">
+        <field name="course_id" ref="course_engineering"/>
+        <field name="sequence">20</field>
+        <field name="name">Industrial Safety Boots</field>
+        <field name="quantity">1</field>
+    </record>
+    <record id="course_engineering_item_3" model="umtti.equipment.item">
+        <field name="course_id" ref="course_engineering"/>
+        <field name="sequence">30</field>
+        <field name="name">Technical Drawing Set, Set Squares (45° &amp; 60°), T-Square</field>
+        <field name="quantity">1</field>
+    </record>
+    <record id="course_engineering_item_4" model="umtti.equipment.item">
+        <field name="course_id" ref="course_engineering"/>
+        <field name="sequence">40</field>
+        <field name="name">Scientific Calculator &amp; Advanced SMP Tables</field>
+        <field name="quantity">1</field>
+    </record>
+</odoo>

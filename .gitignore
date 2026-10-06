@@ -5,3 +5,7 @@ __pycache__/
 .vscode/
 .idea/
 .DS_Store
+
+.env.prod
+config/odoo.prod.conf
+backups/

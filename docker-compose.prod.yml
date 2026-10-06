@@ -1,0 +1,58 @@
+# Production stack: Odoo 18 + PostgreSQL 18. Only the reverse proxy / localhost is exposed.
+#   docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --build
+#   add  --profile tls  to also run Caddy (automatic HTTPS for $DOMAIN)
+name: umtti-prod
+
+services:
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: ${DB_USER:-odoo}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env.prod}
+    volumes:
+      - db-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-odoo} -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: always
+    # no "ports": the database is reachable only from the web container
+
+  web:
+    build: .
+    image: umtti-school-management:${IMAGE_TAG:-latest}
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      HOST: db
+      USER: ${DB_USER:-odoo}
+      PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env.prod}
+    volumes:
+      - ./config/odoo.prod.conf:/etc/odoo/odoo.conf:ro
+      - web-data:/var/lib/odoo
+    ports:
+      - "127.0.0.1:${WEB_PORT:-8069}:8069"
+      - "127.0.0.1:${GEVENT_PORT:-8072}:8072"
+    restart: always
+
+  caddy:
+    profiles: ["tls"]
+    image: caddy:2
+    depends_on: [web]
+    environment:
+      DOMAIN: ${DOMAIN:?set DOMAIN in .env.prod}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+    restart: always
+
+volumes:
+  db-data:
+  web-data:
+  caddy-data:

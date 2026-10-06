@@ -11,6 +11,7 @@
         'security/ir.model.access.csv',
         'data/sequence_data.xml',
         'data/grade_data.xml',
+        'data/course_equipment_data.xml',
         'views/course_views.xml',
         'views/trainer_views.xml',
         'views/exam_views.xml',

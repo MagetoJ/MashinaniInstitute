@@ -1,0 +1,25 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  odoo-install-and-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t umtti-ci .
+      - name: Start PostgreSQL
+        run: |
+          docker network create ci
+          docker run -d --name pg --network ci -e POSTGRES_USER=odoo -e POSTGRES_PASSWORD=odoo -e POSTGRES_DB=postgres postgres:18
+          for i in $(seq 1 30); do docker exec pg pg_isready -U odoo && break; sleep 2; done
+      - name: Install module and run tests
+        run: |
+          docker run --rm --network ci -e HOST=pg -e USER=odoo -e PASSWORD=odoo umtti-ci odoo -d ci -i umtti_school_management \
+            --test-enable --test-tags /umtti_school_management --stop-after-init --without-demo=all \
+            --workers 0 --http-port 8071 2>&1 | tee odoo.log
+          if grep -E " (ERROR|CRITICAL) " odoo.log; then echo "Errors in Odoo log"; exit 1; fi
+          grep -q "0 failed, 0 error" odoo.log

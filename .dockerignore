@@ -1,0 +1,10 @@
+.git
+.github
+.env*
+config
+backups
+caddy
+scripts
+*.md
+docker-compose*.yml
+**/__pycache__

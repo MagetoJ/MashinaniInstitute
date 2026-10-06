@@ -1,0 +1,6 @@
+{$DOMAIN} {
+	encode gzip
+	@ws path /websocket
+	reverse_proxy @ws web:8072
+	reverse_proxy web:8069
+}

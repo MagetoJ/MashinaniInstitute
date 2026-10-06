@@ -1,0 +1,17 @@
+[options]
+; Copy to config/odoo.prod.conf (gitignored) and set admin_passwd. DB credentials come from the environment.
+addons_path = /mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons
+data_dir = /var/lib/odoo
+admin_passwd = CHANGE_ME_long_random_master_password
+db_name = umtti_prod
+db_filter = ^umtti_prod$
+list_db = False
+proxy_mode = True
+workers = 2
+max_cron_threads = 1
+gevent_port = 8072
+limit_memory_soft = 1342177280
+limit_memory_hard = 1610612736
+limit_time_cpu = 120
+limit_time_real = 240
+log_level = info

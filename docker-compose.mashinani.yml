@@ -1,0 +1,29 @@
+# Re-creates ONLY the Odoo web container of the existing "mashinani_institute" stack (port 8069),
+# adding this repo as the extra-addons mount. The database container, its data and the
+# Odoo filestore volume are reused as-is.
+name: mashinani_institute
+
+services:
+  web:
+    image: odoo:18.0
+    container_name: mashinani_odoo
+    restart: always
+    ports:
+      - "8069:8069"
+    environment:
+      HOST: db
+      USER: odoo
+      PASSWORD: ${MASHINANI_DB_PASSWORD:?set MASHINANI_DB_PASSWORD in .env}
+    volumes:
+      - .:/mnt/extra-addons:ro
+      - odoo-web-data:/var/lib/odoo
+
+volumes:
+  odoo-web-data:
+    external: true
+    name: mashinani_institute_odoo-web-data
+
+networks:
+  default:
+    external: true
+    name: mashinani_institute_default
