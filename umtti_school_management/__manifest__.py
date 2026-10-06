@@ -1,6 +1,6 @@
 {
     'name': 'UMTTI School Management',
-    'version': '18.0.1.0.0',
+    'version': '20.0.0.0.0',
     'summary': 'Admissions, curriculum, timetabling, schemes of work and attendance for UMTTI',
     'category': 'Education',
     'author': 'Ujuzi Manyattani Training Institute',
