@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_umtti_poe_tree" model="ir.ui.view">
+        <field name="name">umtti.poe.tree</field>
+        <field name="model">umtti.poe</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="student_id"/>
+                <field name="unit_id"/>
+                <field name="assessor_id"/>
+                <field name="entry_count"/>
+                <field name="progress" widget="progressbar"/>
+                <field name="state" widget="badge" decoration-info="state == 'submitted'"
+                       decoration-success="state == 'verified'"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_umtti_poe_form" model="ir.ui.view">
+        <field name="name">umtti.poe.form</field>
+        <field name="model">umtti.poe</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit" string="Submit" type="object" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_verify" string="Verify Portfolio" type="object" class="btn-primary"
+                            invisible="state != 'submitted'"/>
+                    <button name="action_reset" string="Reopen" type="object" invisible="state == 'draft'"
+                            groups="umtti_school_management.group_umtti_user"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="student_id" readonly="state != 'draft'"/>
+                            <field name="course_id"/>
+                            <field name="unit_id" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="assessor_id"/>
+                            <field name="progress" widget="progressbar"/>
+                        </group>
+                    </group>
+                    <field name="entry_ids" readonly="state == 'verified'">
+                        <list>
+                            <field name="date"/>
+                            <field name="title"/>
+                            <field name="evidence_type"/>
+                            <field name="state" widget="badge" decoration-success="state == 'verified'"
+                                   decoration-danger="state == 'rejected'"/>
+                        </list>
+                        <form>
+                            <header>
+                                <button name="action_verify" string="Verify" type="object" class="btn-primary"
+                                        invisible="state == 'verified'"/>
+                                <button name="action_reject" string="Reject" type="object"
+                                        invisible="state == 'rejected'"/>
+                                <field name="state" widget="statusbar"/>
+                            </header>
+                            <group>
+                                <group>
+                                    <field name="title"/>
+                                    <field name="evidence_type"/>
+                                    <field name="date"/>
+                                </group>
+                                <group>
+                                    <field name="assessor_comment"/>
+                                </group>
+                            </group>
+                            <field name="description" placeholder="Describe the task performed..."/>
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </form>
+                    </field>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="view_umtti_poe_search" model="ir.ui.view">
+        <field name="name">umtti.poe.search</field>
+        <field name="model">umtti.poe</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="student_id"/>
+                <field name="unit_id"/>
+                <field name="assessor_id"/>
+                <filter name="submitted" string="Awaiting Verification" domain="[('state', '=', 'submitted')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_unit" string="Unit" context="{'group_by': 'unit_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_umtti_poe" model="ir.actions.act_window">
+        <field name="name">e-PoE</field>
+        <field name="res_model">umtti.poe</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

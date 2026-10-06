@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_umtti_root" name="UMTTI" sequence="50" groups="group_umtti_trainer"
+              web_icon="base,static/description/icon.png"/>
+
+    <menuitem id="menu_umtti_admission" name="Admission" parent="menu_umtti_root" sequence="10"
+              groups="group_umtti_user"/>
+    <menuitem id="menu_umtti_students" name="Student Master Roll" parent="menu_umtti_admission"
+              action="action_umtti_student" sequence="10"/>
+
+    <menuitem id="menu_umtti_academics" name="Academics" parent="menu_umtti_root" sequence="20"/>
+    <menuitem id="menu_umtti_courses" name="Courses &amp; Equipment" parent="menu_umtti_academics"
+              action="action_umtti_course" sequence="10"/>
+    <menuitem id="menu_umtti_classes" name="Classes" parent="menu_umtti_academics"
+              action="action_umtti_class" sequence="20"/>
+    <menuitem id="menu_umtti_timetable" name="Timetable" parent="menu_umtti_academics"
+              action="action_umtti_slot" sequence="30"/>
+    <menuitem id="menu_umtti_schemes" name="Schemes of Work" parent="menu_umtti_academics"
+              action="action_umtti_scheme" sequence="40"/>
+    <menuitem id="menu_umtti_attendance" name="Attendance" parent="menu_umtti_academics" sequence="50"/>
+    <menuitem id="menu_umtti_attendance_sheets" name="Attendance Sheets" parent="menu_umtti_attendance"
+              action="action_umtti_attendance" sequence="10"/>
+    <menuitem id="menu_umtti_attendance_analysis" name="Student Analysis" parent="menu_umtti_attendance"
+              action="action_umtti_attendance_line" sequence="20" groups="group_umtti_user"/>
+
+    <menuitem id="menu_umtti_staff" name="Staff" parent="menu_umtti_root" sequence="30" groups="group_umtti_user"/>
+    <menuitem id="menu_umtti_trainers" name="Trainers" parent="menu_umtti_staff"
+              action="action_umtti_trainer" sequence="10"/>
+
+    <menuitem id="menu_umtti_exams" name="Exams &amp; Assessment" parent="menu_umtti_root" sequence="25"/>
+    <menuitem id="menu_umtti_assessments" name="Assessments &amp; Exams" parent="menu_umtti_exams"
+              action="action_umtti_assessment" sequence="10"/>
+    <menuitem id="menu_umtti_poe" name="e-PoE" parent="menu_umtti_exams" action="action_umtti_poe" sequence="20"/>
+    <menuitem id="menu_umtti_results" name="Results Analysis" parent="menu_umtti_exams"
+              action="action_umtti_result" sequence="30" groups="group_umtti_user"/>
+    <menuitem id="menu_umtti_rubrics" name="Rubrics" parent="menu_umtti_exams"
+              action="action_umtti_rubric" sequence="40"/>
+    <menuitem id="menu_umtti_graduation" name="Graduation" parent="menu_umtti_exams"
+              action="action_umtti_graduation" sequence="50" groups="group_umtti_user"/>
+    <menuitem id="menu_umtti_tools" name="Tool Assignments" parent="menu_umtti_exams"
+              action="action_umtti_tool" sequence="60" groups="group_umtti_user"/>
+
+    <menuitem id="menu_umtti_config" name="Configuration" parent="menu_umtti_root" sequence="90"
+              groups="group_umtti_manager"/>
+    <menuitem id="menu_umtti_grade_bands" name="Grading Scale" parent="menu_umtti_config"
+              action="action_umtti_grade_band" sequence="10"/>
+</odoo>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_umtti_admission_no" model="ir.sequence">
+        <field name="name">UMTTI Admission Number</field>
+        <field name="code">umtti.admission.no</field>
+        <field name="prefix">UMTTI/%(year)s/</field>
+        <field name="padding">4</field>
+    </record>
+</odoo>

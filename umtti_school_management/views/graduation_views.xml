@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_umtti_graduation_tree" model="ir.ui.view">
+        <field name="name">umtti.graduation.tree</field>
+        <field name="model">umtti.graduation</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="class_id"/>
+                <field name="date"/>
+                <field name="graduated_count"/>
+                <field name="withheld_count"/>
+                <field name="state" widget="badge" decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_umtti_graduation_form" model="ir.ui.view">
+        <field name="name">umtti.graduation.form</field>
+        <field name="model">umtti.graduation</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_generate_lines" string="Generate Graduands" type="object"
+                            invisible="state != 'draft'"/>
+                    <button name="action_process" string="Process Graduation" type="object" class="btn-primary"
+                            invisible="state != 'draft'" groups="umtti_school_management.group_umtti_manager"
+                            confirm="Eligible students will be marked Completed and issued certificate numbers. Continue?"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="class_id" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="graduated_count"/>
+                            <field name="withheld_count"/>
+                        </group>
+                    </group>
+                    <field name="line_ids">
+                        <list editable="bottom" create="0">
+                            <field name="student_id" readonly="1"/>
+                            <field name="eligible" widget="boolean"/>
+                            <field name="eligibility_note"/>
+                            <field name="override" groups="umtti_school_management.group_umtti_manager"
+                                   readonly="parent.state != 'draft'"/>
+                            <field name="decision" widget="badge" decoration-success="decision == 'graduated'"
+                                   decoration-danger="decision == 'withheld'"/>
+                            <field name="certificate_no"/>
+                        </list>
+                    </field>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="action_umtti_graduation" model="ir.actions.act_window">
+        <field name="name">Graduation</field>
+        <field name="res_model">umtti.graduation</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Tool assignments -->
+    <record id="view_umtti_tool_tree" model="ir.ui.view">
+        <field name="name">umtti.tool.issue.tree</field>
+        <field name="model">umtti.tool.issue</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date_issued"/>
+                <field name="student_id"/>
+                <field name="tool"/>
+                <field name="serial_no"/>
+                <field name="quantity"/>
+                <field name="purpose"/>
+                <field name="state" widget="badge" decoration-success="state == 'returned'"
+                       decoration-danger="state == 'lost'"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_umtti_tool_form" model="ir.ui.view">
+        <field name="name">umtti.tool.issue.form</field>
+        <field name="model">umtti.tool.issue</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_return" string="Mark Returned" type="object" class="btn-primary"
+                            invisible="state != 'issued'"/>
+                    <button name="action_lost" string="Mark Lost" type="object" invisible="state != 'issued'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="student_id"/>
+                            <field name="tool"/>
+                            <field name="serial_no"/>
+                            <field name="quantity"/>
+                        </group>
+                        <group>
+                            <field name="purpose"/>
+                            <field name="date_issued"/>
+                            <field name="date_returned"/>
+                            <field name="notes"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="view_umtti_tool_search" model="ir.ui.view">
+        <field name="name">umtti.tool.issue.search</field>
+        <field name="model">umtti.tool.issue</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="student_id"/>
+                <field name="tool"/>
+                <field name="serial_no"/>
+                <filter name="outstanding" string="Outstanding" domain="[('state', '=', 'issued')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_student" string="Student" context="{'group_by': 'student_id'}"/>
+                    <filter name="group_purpose" string="Purpose" context="{'group_by': 'purpose'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_umtti_tool" model="ir.actions.act_window">
+        <field name="name">Tool Assignments</field>
+        <field name="res_model">umtti.tool.issue</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_outstanding': 1}</field>
+    </record>
+</odoo>

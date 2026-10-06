@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============ Course ============ -->
+    <record id="view_umtti_course_tree" model="ir.ui.view">
+        <field name="name">umtti.course.tree</field>
+        <field name="model">umtti.course</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="department"/>
+                <field name="level"/>
+                <field name="duration"/>
+                <field name="duration_unit"/>
+                <field name="total_hours"/>
+                <field name="student_count"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_umtti_course_form" model="ir.ui.view">
+        <field name="name">umtti.course.form</field>
+        <field name="model">umtti.course</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_classes" type="object" class="oe_stat_button" icon="fa-users">
+                            <field name="class_count" widget="statinfo" string="Classes"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="department"/>
+                            <field name="level"/>
+                        </group>
+                        <group>
+                            <label for="duration"/>
+                            <div class="o_row">
+                                <field name="duration"/>
+                                <field name="duration_unit"/>
+                            </div>
+                            <field name="total_hours"/>
+                            <field name="student_count"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Units" name="units">
+                            <field name="unit_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="unit_type"/>
+                                    <field name="hours" sum="Total"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Required Equipment" name="equipment">
+                            <field name="equipment_item_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="quantity"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Entry Requirements" name="entry">
+                            <field name="entry_requirements"/>
+                            <separator string="Description"/>
+                            <field name="description"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_umtti_course_search" model="ir.ui.view">
+        <field name="name">umtti.course.search</field>
+        <field name="model">umtti.course</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" filter_domain="['|', ('name', 'ilike', self), ('code', 'ilike', self)]" string="Course"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_dept" string="Department" context="{'group_by': 'department'}"/>
+                    <filter name="group_level" string="Level" context="{'group_by': 'level'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_umtti_course" model="ir.actions.act_window">
+        <field name="name">Courses</field>
+        <field name="res_model">umtti.course</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ============ Class / Intake ============ -->
+    <record id="view_umtti_class_tree" model="ir.ui.view">
+        <field name="name">umtti.class.tree</field>
+        <field name="model">umtti.class</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="course_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="student_count"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'"
+                       decoration-success="state == 'running'"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_umtti_class_form" model="ir.ui.view">
+        <field name="name">umtti.class.form</field>
+        <field name="model">umtti.class</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_start" string="Start" type="object" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_done" string="Complete" type="object" invisible="state != 'running'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="course_id"/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Students" name="students">
+                            <button name="action_load_course_students" type="object" class="btn-secondary"
+                                    string="Add Enrolled Students of Course"/>
+                            <field name="student_ids" options="{'no_create': True}">
+                                <list>
+                                    <field name="admission_no"/>
+                                    <field name="name"/>
+                                    <field name="gender"/>
+                                    <field name="student_state"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Timetable" name="timetable">
+                            <field name="slot_ids">
+                                <list editable="bottom">
+                                    <field name="course_id" column_invisible="1"/>
+                                    <field name="weekday"/>
+                                    <field name="hour_from" widget="float_time"/>
+                                    <field name="hour_to" widget="float_time"/>
+                                    <field name="unit_id"/>
+                                    <field name="trainer_id"/>
+                                    <field name="room"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_umtti_class_search" model="ir.ui.view">
+        <field name="name">umtti.class.search</field>
+        <field name="model">umtti.class</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="course_id"/>
+                <filter name="running" string="Running" domain="[('state', '=', 'running')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_course" string="Course" context="{'group_by': 'course_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_umtti_class" model="ir.actions.act_window">
+        <field name="name">Classes</field>
+        <field name="res_model">umtti.class</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ============ Timetable ============ -->
+    <record id="view_umtti_slot_tree" model="ir.ui.view">
+        <field name="name">umtti.timetable.slot.tree</field>
+        <field name="model">umtti.timetable.slot</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="weekday"/>
+                <field name="hour_from" widget="float_time"/>
+                <field name="hour_to" widget="float_time"/>
+                <field name="class_id"/>
+                <field name="unit_id"/>
+                <field name="trainer_id"/>
+                <field name="room"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_umtti_slot_form" model="ir.ui.view">
+        <field name="name">umtti.timetable.slot.form</field>
+        <field name="model">umtti.timetable.slot</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="class_id"/>
+                            <field name="course_id"/>
+                            <field name="unit_id"/>
+                            <field name="trainer_id"/>
+                        </group>
+                        <group>
+                            <field name="weekday"/>
+                            <field name="hour_from" widget="float_time"/>
+                            <field name="hour_to" widget="float_time"/>
+                            <field name="room"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_umtti_slot_search" model="ir.ui.view">
+        <field name="name">umtti.timetable.slot.search</field>
+        <field name="model">umtti.timetable.slot</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="class_id"/>
+                <field name="trainer_id"/>
+                <field name="room"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_day" string="Day" context="{'group_by': 'weekday'}"/>
+                    <filter name="group_trainer" string="Trainer" context="{'group_by': 'trainer_id'}"/>
+                    <filter name="group_class" string="Class" context="{'group_by': 'class_id'}"/>
+                    <filter name="group_room" string="Room" context="{'group_by': 'room'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_umtti_slot" model="ir.actions.act_window">
+        <field name="name">Timetable</field>
+        <field name="res_model">umtti.timetable.slot</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_group_day': 1}</field>
+    </record>
+
+    <!-- ============ Scheme of Work ============ -->
+    <record id="view_umtti_scheme_tree" model="ir.ui.view">
+        <field name="name">umtti.scheme.work.tree</field>
+        <field name="model">umtti.scheme.work</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="trainer_id"/>
+                <field name="term"/>
+                <field name="academic_year"/>
+                <field name="progress" widget="progressbar"/>
+                <field name="state" widget="badge" decoration-info="state == 'submitted'"
+                       decoration-success="state == 'approved'"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_umtti_scheme_form" model="ir.ui.view">
+        <field name="name">umtti.scheme.work.form</field>
+        <field name="model">umtti.scheme.work</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit" string="Submit" type="object" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_approve" string="Approve" type="object" class="btn-primary"
+                            invisible="state != 'submitted'" groups="umtti_school_management.group_umtti_user"/>
+                    <button name="action_reset" string="Reset to Draft" type="object"
+                            invisible="state == 'draft'" groups="umtti_school_management.group_umtti_user"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <h1><field name="name"/></h1>
+                    <group>
+                        <group>
+                            <field name="class_id"/>
+                            <field name="course_id"/>
+                            <field name="unit_id"/>
+                            <field name="trainer_id"/>
+                        </group>
+                        <group>
+                            <field name="academic_year"/>
+                            <field name="term"/>
+                            <field name="progress" widget="progressbar"/>
+                        </group>
+                    </group>
+                    <field name="line_ids">
+                        <list editable="bottom">
+                            <field name="week_no" readonly="parent.state == 'approved'"/>
+                            <field name="lesson_no" readonly="parent.state == 'approved'"/>
+                            <field name="topic" readonly="parent.state == 'approved'"/>
+                            <field name="objectives" readonly="parent.state == 'approved'"/>
+                            <field name="activities" readonly="parent.state == 'approved'"/>
+                            <field name="resources" readonly="parent.state == 'approved'"/>
+                            <field name="assessment" readonly="parent.state == 'approved'"/>
+                            <field name="covered" readonly="parent.state != 'approved'"/>
+                            <field name="date_covered"/>
+                        </list>
+                    </field>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="view_umtti_scheme_search" model="ir.ui.view">
+        <field name="name">umtti.scheme.work.search</field>
+        <field name="model">umtti.scheme.work</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="trainer_id"/>
+                <field name="class_id"/>
+                <filter name="submitted" string="Awaiting Approval" domain="[('state', '=', 'submitted')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_trainer" string="Trainer" context="{'group_by': 'trainer_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_umtti_scheme" model="ir.actions.act_window">
+        <field name="name">Schemes of Work</field>
+        <field name="res_model">umtti.scheme.work</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ============ Attendance ============ -->
+    <record id="view_umtti_attendance_tree" model="ir.ui.view">
+        <field name="name">umtti.attendance.sheet.tree</field>
+        <field name="model">umtti.attendance.sheet</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date"/>
+                <field name="class_id"/>
+                <field name="unit_id"/>
+                <field name="trainer_id"/>
+                <field name="present_count"/>
+                <field name="absent_count"/>
+                <field name="attendance_rate" widget="progressbar"/>
+                <field name="state" widget="badge" decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_umtti_attendance_form" model="ir.ui.view">
+        <field name="name">umtti.attendance.sheet.form</field>
+        <field name="model">umtti.attendance.sheet</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_load_students" string="Load Students" type="object"
+                            invisible="state != 'draft'"/>
+                    <button name="action_confirm" string="Confirm" type="object" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_reset" string="Reset to Draft" type="object" invisible="state != 'done'"
+                            groups="umtti_school_management.group_umtti_user"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="date" readonly="state == 'done'"/>
+                            <field name="class_id" readonly="state == 'done'"/>
+                            <field name="course_id"/>
+                        </group>
+                        <group>
+                            <field name="unit_id" readonly="state == 'done'"/>
+                            <field name="trainer_id" readonly="state == 'done'"/>
+                            <field name="attendance_rate" widget="progressbar"/>
+                        </group>
+                    </group>
+                    <field name="line_ids" readonly="state == 'done'">
+                        <list editable="bottom" create="0" delete="0">
+                            <field name="student_id" readonly="1"/>
+                            <field name="status"/>
+                            <field name="remarks"/>
+                        </list>
+                    </field>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="view_umtti_attendance_search" model="ir.ui.view">
+        <field name="name">umtti.attendance.sheet.search</field>
+        <field name="model">umtti.attendance.sheet</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="class_id"/>
+                <field name="unit_id"/>
+                <field name="trainer_id"/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="today" string="Today" domain="[('date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_class" string="Class" context="{'group_by': 'class_id'}"/>
+                    <filter name="group_date" string="Date" context="{'group_by': 'date:week'}"/>
+                    <filter name="group_trainer" string="Trainer" context="{'group_by': 'trainer_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_umtti_attendance" model="ir.actions.act_window">
+        <field name="name">Attendance Sheets</field>
+        <field name="res_model">umtti.attendance.sheet</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Student-level attendance analysis -->
+    <record id="view_umtti_attendance_line_pivot" model="ir.ui.view">
+        <field name="name">umtti.attendance.line.pivot</field>
+        <field name="model">umtti.attendance.line</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="student_id" type="row"/>
+                <field name="status" type="col"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="view_umtti_attendance_line_tree" model="ir.ui.view">
+        <field name="name">umtti.attendance.line.tree</field>
+        <field name="model">umtti.attendance.line</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0">
+                <field name="date"/>
+                <field name="class_id"/>
+                <field name="unit_id"/>
+                <field name="student_id"/>
+                <field name="status"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_umtti_attendance_line_search" model="ir.ui.view">
+        <field name="name">umtti.attendance.line.search</field>
+        <field name="model">umtti.attendance.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="student_id"/>
+                <field name="class_id"/>
+                <filter name="absent" string="Absent" domain="[('status', '=', 'absent')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_student" string="Student" context="{'group_by': 'student_id'}"/>
+                    <filter name="group_class" string="Class" context="{'group_by': 'class_id'}"/>
+                    <filter name="group_status" string="Status" context="{'group_by': 'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_umtti_attendance_line" model="ir.actions.act_window">
+        <field name="name">Student Attendance Analysis</field>
+        <field name="res_model">umtti.attendance.line</field>
+        <field name="view_mode">pivot,list</field>
+    </record>
+</odoo>

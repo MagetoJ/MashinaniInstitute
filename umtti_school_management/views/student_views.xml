@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Student form: extends the standard partner form -->
+    <record id="view_partner_form_umtti_student" model="ir.ui.view">
+        <field name="name">res.partner.form.umtti.student</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header invisible="not is_student">
+                    <button name="action_enroll" string="Enrol" type="object" class="btn-primary"
+                            invisible="student_state != 'applicant'"/>
+                    <button name="action_complete" string="Mark Completed" type="object"
+                            invisible="student_state != 'enrolled'"/>
+                    <button name="action_withdraw" string="Withdraw" type="object"
+                            invisible="student_state not in ('applicant', 'enrolled')"/>
+                    <field name="student_state" widget="statusbar" statusbar_visible="applicant,enrolled,completed"/>
+                </header>
+            </xpath>
+            <xpath expr="//field[@name='vat']/.." position="after">
+                <group string="Student" invisible="not is_student">
+                    <field name="admission_no"/>
+                    <field name="course_id"/>
+                </group>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Student Profile" name="umtti_student" invisible="not is_student">
+                    <group>
+                        <group string="Admission">
+                            <field name="is_student"/>
+                            <field name="admission_date"/>
+                            <field name="date_completed"/>
+                        </group>
+                        <group string="Personal Details">
+                            <field name="date_of_birth"/>
+                            <field name="age"/>
+                            <field name="id_no"/>
+                            <field name="gender"/>
+                            <field name="marital_status"/>
+                            <field name="education_level"/>
+                        </group>
+                        <group string="Location">
+                            <field name="county"/>
+                            <field name="conservancy"/>
+                        </group>
+                        <group string="Next of Kin">
+                            <field name="next_of_kin_name"/>
+                            <field name="next_of_kin_phone" widget="phone"/>
+                        </group>
+                    </group>
+                </page>
+                <page string="Verification Checklist" name="umtti_documents" invisible="not is_student">
+                    <field name="documents_complete" invisible="1"/>
+                    <field name="document_check_ids">
+                        <list editable="bottom" create="0" delete="0">
+                            <field name="document_type" readonly="1"/>
+                            <field name="received"/>
+                            <field name="date_received"/>
+                            <field name="notes"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="Equipment Checklist" name="umtti_equipment" invisible="not is_student">
+                    <button name="action_regenerate_equipment" type="object" string="Refresh from Course"
+                            class="btn-secondary"/>
+                    <field name="equipment_line_ids">
+                        <list editable="bottom" create="0">
+                            <field name="item_id" readonly="1"/>
+                            <field name="qty_required" readonly="1"/>
+                            <field name="qty_provided"/>
+                            <field name="state" widget="badge"
+                                   decoration-success="state == 'complete'"
+                                   decoration-warning="state == 'partial'"
+                                   decoration-danger="state == 'pending'"/>
+                            <field name="notes"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_umtti_student_tree" model="ir.ui.view">
+        <field name="name">umtti.student.tree</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="admission_no"/>
+                <field name="name"/>
+                <field name="id_no"/>
+                <field name="gender"/>
+                <field name="age"/>
+                <field name="course_id"/>
+                <field name="admission_date"/>
+                <field name="student_state" widget="badge"/>
+                <field name="documents_complete" widget="boolean"/>
+                <field name="equipment_complete" widget="boolean"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_umtti_student_search" model="ir.ui.view">
+        <field name="name">umtti.student.search</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" filter_domain="['|', '|', ('name', 'ilike', self), ('admission_no', 'ilike', self), ('id_no', 'ilike', self)]" string="Name / Admission No / ID"/>
+                <field name="course_id"/>
+                <field name="county"/>
+                <filter name="applicant" string="Applicants" domain="[('student_state', '=', 'applicant')]"/>
+                <filter name="enrolled" string="Enrolled" domain="[('student_state', '=', 'enrolled')]"/>
+                <filter name="completed" string="Completed" domain="[('student_state', '=', 'completed')]"/>
+                <filter name="docs_incomplete" string="Documents Incomplete" domain="[('documents_complete', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_course" string="Course" context="{'group_by': 'course_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'student_state'}"/>
+                    <filter name="group_gender" string="Gender" context="{'group_by': 'gender'}"/>
+                    <filter name="group_county" string="County" context="{'group_by': 'county'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_umtti_student" model="ir.actions.act_window">
+        <field name="name">Student Master Roll</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_student', '=', True)]</field>
+        <field name="context">{'default_is_student': True, 'default_company_type': 'person'}</field>
+        <field name="search_view_id" ref="view_umtti_student_search"/>
+    </record>
+    <record id="action_umtti_student_tree" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_umtti_student_tree"/>
+        <field name="act_window_id" ref="action_umtti_student"/>
+    </record>
+    <record id="action_umtti_student_form" model="ir.actions.act_window.view">
+        <field name="sequence">2</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_partner_form_umtti_student"/>
+        <field name="act_window_id" ref="action_umtti_student"/>
+    </record>
+</odoo>

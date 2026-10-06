@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_transcript" model="ir.actions.report">
+        <field name="name">Academic Transcript</field>
+        <field name="model">res.partner</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">umtti_school_management.report_transcript_doc</field>
+        <field name="report_file">umtti_school_management.report_transcript_doc</field>
+        <field name="print_report_name">'Transcript - %s' % (object.name or '')</field>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_type">report</field>
+        <field name="groups_id" eval="[(4, ref('umtti_school_management.group_umtti_user'))]"/>
+    </record>
+
+    <template id="report_transcript_doc">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <t t-set="data" t-value="o.get_transcript_data()"/>
+                    <div class="page">
+                        <h2 class="text-center">Academic Transcript</h2>
+                        <table class="table table-sm table-borderless mt-3">
+                            <tr>
+                                <td><strong>Name:</strong> <span t-field="o.name"/></td>
+                                <td><strong>Admission No:</strong> <span t-field="o.admission_no"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Course:</strong> <span t-field="o.course_id.name"/></td>
+                                <td><strong>ID No:</strong> <span t-field="o.id_no"/></td>
+                            </tr>
+                        </table>
+
+                        <t t-if="data['units']">
+                            <t t-foreach="data['units']" t-as="u">
+                                <h5 class="mt-4">
+                                    <span t-out="u['unit']"/> —
+                                    <span t-out="u['score']"/>% (<span t-out="u['grade']"/>)
+                                </h5>
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Assessment</th><th>Type</th><th>Date</th>
+                                            <th class="text-end">Marks</th>
+                                            <th class="text-end">%</th><th>Grade</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="u['results']" t-as="r">
+                                            <td><span t-out="r['assessment']"/></td>
+                                            <td><span t-out="r['type']"/></td>
+                                            <td><span t-out="r['date']"/></td>
+                                            <td class="text-end"><span t-out="r['marks']"/> / <span t-out="r['max_marks']"/></td>
+                                            <td class="text-end"><span t-out="r['percentage']"/></td>
+                                            <td><span t-out="r['grade']"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </t>
+                            <p class="mt-4">
+                                <strong>Overall:</strong> <span t-out="data['overall']"/>% (<span t-out="data['grade']"/>) —
+                                <strong t-if="data['competent']">COMPETENT</strong>
+                                <strong t-else="">NOT YET COMPETENT</strong>
+                            </p>
+                        </t>
+                        <p t-else="">No published assessment results yet.</p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

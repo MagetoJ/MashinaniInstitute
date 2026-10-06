@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_umtti" model="ir.module.category">
+        <field name="name">UMTTI</field>
+        <field name="sequence">50</field>
+    </record>
+    <record id="group_umtti_trainer" model="res.groups">
+        <field name="name">Trainer</field>
+        <field name="category_id" ref="module_category_umtti"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="group_umtti_user" model="res.groups">
+        <field name="name">Officer</field>
+        <field name="category_id" ref="module_category_umtti"/>
+        <field name="implied_ids" eval="[(4, ref('group_umtti_trainer'))]"/>
+    </record>
+    <record id="group_umtti_manager" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="category_id" ref="module_category_umtti"/>
+        <field name="implied_ids" eval="[(4, ref('group_umtti_user'))]"/>
+        <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+    </record>
+
+    <!-- Trainers only see their own attendance sheets and schemes of work -->
+    <record id="rule_attendance_sheet_trainer" model="ir.rule">
+        <field name="name">Attendance sheet: own (trainer)</field>
+        <field name="model_id" ref="model_umtti_attendance_sheet"/>
+        <field name="groups" eval="[(4, ref('group_umtti_trainer'))]"/>
+        <field name="domain_force">[('trainer_id.user_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_attendance_sheet_user" model="ir.rule">
+        <field name="name">Attendance sheet: all (officer)</field>
+        <field name="model_id" ref="model_umtti_attendance_sheet"/>
+        <field name="groups" eval="[(4, ref('group_umtti_user'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_scheme_work_trainer" model="ir.rule">
+        <field name="name">Scheme of work: own (trainer)</field>
+        <field name="model_id" ref="model_umtti_scheme_work"/>
+        <field name="groups" eval="[(4, ref('group_umtti_trainer'))]"/>
+        <field name="domain_force">[('trainer_id.user_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_scheme_work_user" model="ir.rule">
+        <field name="name">Scheme of work: all (officer)</field>
+        <field name="model_id" ref="model_umtti_scheme_work"/>
+        <field name="groups" eval="[(4, ref('group_umtti_user'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_assessment_trainer" model="ir.rule">
+        <field name="name">assessment: own (trainer)</field>
+        <field name="model_id" ref="model_umtti_assessment"/>
+        <field name="groups" eval="[(4, ref('group_umtti_trainer'))]"/>
+        <field name="domain_force">[('trainer_id.user_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_assessment_user" model="ir.rule">
+        <field name="name">assessment: all (officer)</field>
+        <field name="model_id" ref="model_umtti_assessment"/>
+        <field name="groups" eval="[(4, ref('group_umtti_user'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_assessment_result_trainer" model="ir.rule">
+        <field name="name">assessment_result: own (trainer)</field>
+        <field name="model_id" ref="model_umtti_assessment_result"/>
+        <field name="groups" eval="[(4, ref('group_umtti_trainer'))]"/>
+        <field name="domain_force">[('assessment_id.trainer_id.user_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_assessment_result_user" model="ir.rule">
+        <field name="name">assessment_result: all (officer)</field>
+        <field name="model_id" ref="model_umtti_assessment_result"/>
+        <field name="groups" eval="[(4, ref('group_umtti_user'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+</odoo>

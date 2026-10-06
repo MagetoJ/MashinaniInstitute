@@ -1,0 +1,40 @@
+name: umtti   # separate compose project: does not touch any other Odoo stack on this machine
+
+services:
+  db:
+    image: postgres:15
+    container_name: umtti_db
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: ${DB_USER:-odoo}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+    volumes:
+      - umtti-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-odoo} -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  web:
+    image: odoo:18.0
+    container_name: umtti_odoo
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${ODOO_PORT:-8070}:8069"
+    environment:
+      HOST: db
+      USER: ${DB_USER:-odoo}
+      PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+    volumes:
+      - .:/mnt/extra-addons:ro            # repo root; Odoo finds umtti_school_management inside
+      - ./config/odoo.conf:/etc/odoo/odoo.conf:ro
+      - umtti-web-data:/var/lib/odoo
+    restart: unless-stopped
+
+volumes:
+  umtti-db-data:
+  umtti-web-data:

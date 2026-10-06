@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="grade_distinction" model="umtti.grade.band">
+        <field name="name">Distinction</field><field name="code">D</field>
+        <field name="min_percent">80</field><field name="competent" eval="True"/>
+    </record>
+    <record id="grade_credit" model="umtti.grade.band">
+        <field name="name">Credit</field><field name="code">C</field>
+        <field name="min_percent">65</field><field name="competent" eval="True"/>
+    </record>
+    <record id="grade_pass" model="umtti.grade.band">
+        <field name="name">Pass</field><field name="code">P</field>
+        <field name="min_percent">50</field><field name="competent" eval="True"/>
+    </record>
+    <record id="grade_fail" model="umtti.grade.band">
+        <field name="name">Not Yet Competent</field><field name="code">NYC</field>
+        <field name="min_percent">0</field><field name="competent" eval="False"/>
+    </record>
+    <record id="seq_umtti_certificate_no" model="ir.sequence">
+        <field name="name">UMTTI Certificate Number</field>
+        <field name="code">umtti.certificate.no</field>
+        <field name="prefix">UMTTI/CERT/%(year)s/</field>
+        <field name="padding">4</field>
+    </record>
+</odoo>
